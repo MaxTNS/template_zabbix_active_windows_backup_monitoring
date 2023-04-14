@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2017-08-17T13:45:55Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Windows Server Backup</template>
+            <name>Template Windows Server Backup</name>
+            <description/>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Windows backup</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Backup Status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>eventlog[Microsoft-Windows-Backup,,&quot;Information|Error&quot;,,{$EVENTLOGFILTER}]</key>
+                    <delay>1h</delay>
+                    <trends>0</trends>
+                    <status>DISABLED</status>
+                    <value_type>LOG</value_type>
+                    <applications>
+                        <application>
+                            <name>Windows backup</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules/>
+            <macros>
+                <macro>
+                    <macro>{$EVENTLOGFILTER}</macro>
+                    <value>^([0-9]|[1-9][0-3]|[1-9][5-9]|[1-2][0-9][0-2]|[1-2][0-9][4-9]|[1-2][0][0-9]|[1-2][2-9][0-9])$</value>
+                </macro>
+            </macros>
+            <templates/>
+            <screens/>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <expression>{Windows Server Backup:eventlog[Microsoft-Windows-Backup,,&quot;Information|Error&quot;,,{$EVENTLOGFILTER}].logseverity()}&lt;&gt;1</expression>
+            <name>Backup Failed/Warning</name>
+            <url/>
+            <status>DISABLED</status>
+            <priority>HIGH</priority>
+            <description/>
+            <type>SINGLE</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Windows Server Backup:eventlog[Microsoft-Windows-Backup,,&quot;Information|Error&quot;,,{$EVENTLOGFILTER}].nodata(2d)}=1</expression>
+            <name>No Backup Reported in the last 2 days</name>
+            <url/>
+            <status>DISABLED</status>
+            <priority>AVERAGE</priority>
+            <description/>
+            <type>SINGLE</type>
+            <dependencies/>
+        </trigger>
+    </triggers>
+</zabbix_export>
